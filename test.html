@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+<title> Test </title>
+</head>
+<body onload = "preload()">
+<P> nishant sucks </P>
+<script type="text/javascript">
+	var sucks;
+	function preload(){
+	alert(1);
+	$.get("192.168.50.188/gen",function(data){
+	alert("1.5");
+	sucks = data;
+	});
+	alert(2);
+}
+</script>
+</body>
+</html>
