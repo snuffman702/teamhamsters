@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+   <title>Tic Tac Toe online</title>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   <style>
+    td{
+		height: 200px;
+		width: 200px;
+		font-size: 173px;
+		text-align: center;
+		background-color: grey;
+    }
+	h1{
+		font-size: 40px;
+    }
+
+   </style>
+</head>
+
+<body onload = "preload()">
+<center>
+<h1 id = "turn"></h1>
+<table id = "bor">
+	<tr>
+		<td id = "box1" onclick = "myFunc(1)"></td>
+		<td id = "box2" onclick = "myFunc(2)"></td>
+		<td id = "box3" onclick = "myFunc(3)"></td>
+	</tr>
+	<tr>
+		<td id = "box4" onclick = "myFunc(4)"></td>
+		<td id = "box5" onclick = "myFunc(5)"></td>
+		<td id = "box6" onclick = "myFunc(6)"></td>
+	</tr> 
+	<tr>
+		<td id = "box7" onclick = "myFunc(7)"></td>
+		<td id = "box8" onclick = "myFunc(8)"></td>
+		<td id = "box9" onclick = "myFunc(9)"></td>
+	</tr> 
+</table>
+</center>
+<script>
+var win = false;
+
+var board;
+
+var reload = setInterval(preload,1000);
+
+function preload(){
+alert("hello1");
+var oldboard = board;
+$.get("localhost:8080/board",function(data){
+	board = data;
+	if(oldboard != board){
+	makeBoard();
+	}
+});
+alert("hello3");
+}
+
+function saveBoard(){
+	alert("hello2");
+$.ajax({
+	headers: {
+		'Accept': 'application/json',
+		'Content-Type': 'application/json'
+	},
+	url: 'localhost:8080/board',
+	data: board,
+	method: 'PUT',
+	crossDomain: true,
+	async: false,
+});
+}
+function theThing(){
+	for (var i = 1; i <= 9; i++) {
+                if (document.getElementById("box" + i).innerHTML == "") {
+                    i = 10;
+                }
+                if (i == 9) {
+                    return true;
+                }
+            }
+}
+function makeBoard(){
+if(board.done){
+	if (board.turn == "O") {
+                document.getElementById("turn").innerHTML = "You Win!!";
+				reset();
+            } 
+			else {
+                document.getElementById("turn").innerHTML = "You Lose, try again.";
+				alert("You Lose, try again.");
+				reset();
+            }
+}
+if(board.done == false){
+	if(board.tie == true){
+		document.getElementById("turn").innerHTML = "It's a tie!!";
+		//alert("Tie game!!");
+		reset();		
+	}
+	if(board.turn == "X"){
+		document.getElementById("turn").innerHTML = "Your turn!!";
+	}
+	else{
+		document.getElementById("turn").innerHTML = "Other players turn."; 
+	}
+	document.getElementById("box1").innerHTML = board.s1;
+	document.getElementById("box2").innerHTML = board.s2;
+	document.getElementById("box3").innerHTML = board.s3;
+	document.getElementById("box4").innerHTML = board.s4;
+	document.getElementById("box5").innerHTML = board.s5;
+	document.getElementById("box6").innerHTML = board.s6;
+	document.getElementById("box7").innerHTML = board.s7;
+	document.getElementById("box8").innerHTML = board.s8;
+	document.getElementById("box9").innerHTML = board.s9;
+	for(var i = 1; i <= 9; i++){
+		if(document.getElementById("box"+i).innerHTML == "X"){
+			document.getElementById("box"+i).style.color = "#FF1111";
+		}
+		if(document.getElementById("box"+i).innerHTML == "O"){
+			document.getElementById("box"+i).style.color = "blue";
+		}
+	}
+	}	
+}
+function myFunc(num){
+	if(board.done==false && document.getElementById("box"+num).innerHTML == "" && board.turn == "X"){
+		document.getElementById("box"+num).innerHTML = "X";
+		document.getElementById("box"+num).style.color = "#FF1111";
+		document.getElementById("turn").innerHTML = "Other players turn.";
+		
+		loadboard();
+
+	}
+}
+function loadboard(){
+		board = JSON.stringify({
+		    "s1": document.getElementById("box1").innerHTML,
+			"s2": document.getElementById("box2").innerHTML,
+			"s3": document.getElementById("box3").innerHTML,
+			"s4": document.getElementById("box4").innerHTML,
+			"s5": document.getElementById("box5").innerHTML,
+			"s6": document.getElementById("box6").innerHTML,
+			"s7": document.getElementById("box7").innerHTML,
+			"s8": document.getElementById("box8").innerHTML,
+			"s9": document.getElementById("box9").innerHTML,
+			"turn": "O",
+			"done": false,
+			"tie": false
+		});
+		win = false;
+		saveBoard();
+}
+function reset(){ 
+    for (var i = 1; i <= 9; i++) {
+        document.getElementById("box" + i).innerHTML = "";
+    }
+	win = true;
+    loadboard();
+}
+
+
+</script>
+<h4>Give This Link To The Pearso You Want To Play With</h4>
+http://pathologist-rabbit-36240.bitballoon.com/player2
+</body>
